@@ -1,3 +1,13 @@
+/**
+ * @typedef {import("mongoose").Document & {
+*   addSession: function(Object): Promise<Object>,
+*   updateSession: function(Object, Object): Promise<Object>,
+*   removeSession: function(Object): Promise<void>
+* }} EventDocument
+*/
+
+/** @type {import("mongoose").Model<EventDocument>} */
+
 import mongoose from "mongoose";
 import { SessionSchema } from "./session.model.js";
 import auditLoggerPlugin from "../utils/AuditLoggerPlugin";

@@ -1,10 +1,14 @@
 import EventRole from "../models/eventRole.model.js";
+import { notifySpeakerAdded } from "../utils/sendNotification.js";
 
 export const createEventRole = async (eventRoleDetails) => {
   try {
-    const newEventRole = await Notification.create(eventRoleDetails)
+    const newEventRole = await EventRole.create(eventRoleDetails)
       .populate("userId", "name email")
       .populate("eventId");
+
+    // if(newEventRole.role==="speaker")
+    // await notifySpeakerAdded()
     return newEventRole;
   } catch (error) {
     console.log(error);

@@ -1,11 +1,24 @@
-import Event from "../models/event.model.js";
-import User from "../models/user.model.js";
 import Waitlist from "../models/waitlist.model.js";
 import ApiError from "../utils/ApiError.js";
 
 export const getWaitlistById = async (id) => {
   try {
     const waitlist = await Waitlist.findById(id)
+      .populate("userId", "name email")
+      .populate("eventId", "title shortDescription");
+    return waitlist;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving waitlist by id");
+  }
+};
+
+export const getWaitlistByUserEvent = async (userId, eventId) => {
+  try {
+    const waitlist = await Waitlist.findOne({
+      userId,
+      eventId,
+    })
       .populate("userId", "name email")
       .populate("eventId", "title shortDescription");
     return waitlist;

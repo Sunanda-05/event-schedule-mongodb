@@ -64,3 +64,23 @@ export const updateFeedback = async (feedbackId, feedbackDetails) => {
     throw new Error("Error updating feedback");
   }
 };
+
+export const markHelpful = async (feedbackId, userId) => {
+  const feedback = await Feedback.findById(feedbackId);
+  if (!feedback) {
+    throw new ApiError(404, "Feedback not found");
+  }
+
+  const hasMarked = feedback.helpful.users.includes(userId);
+
+  if (hasMarked) {
+    feedback.helpful.users.pull(userId);
+    feedback.helpful.count = feedback.helpful.users.length;
+  } else {
+    feedback.helpful.users.push(userId);
+    feedback.helpful.count = feedback.helpful.users.length;
+  }
+
+  await feedback.save();
+  return feedback;
+};

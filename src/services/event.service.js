@@ -1,5 +1,6 @@
 import Event from "../models/event.model.js";
 import ApiError from "../utils/ApiError.js";
+import { createEventRole } from "./eventRole.service.js";
 
 export const getEventById = async (id) => {
   try {
@@ -214,5 +215,26 @@ export const getVersionHistory = async (eventId) => {
   } catch (error) {
     console.log(error);
     throw new Error("Error retrieving version history");
+  }
+};
+
+export const createEvent = async (eventDetails) => {
+  try {
+    const newEvent = await Event.create(eventDetails);
+
+    await createEventRole({
+      eventId: newEvent._id,
+      userId: newEvent.createdBy,
+      role: "organizer",
+    });
+
+    const populatedEvent = await Event.findById(newEvent._id)
+      .populate("createdBy", "name email")
+      .populate("categories", "name slug");
+
+    return populatedEvent;
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Error creating event");
   }
 };
