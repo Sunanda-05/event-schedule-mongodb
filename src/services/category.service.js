@@ -5,14 +5,20 @@ export const getCategoryById = async (id) => {
   try {
     const category = await Category.findById(id).lean();
     return category;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving category");
+  }
 };
 
 export const getCategories = async () => {
   try {
     const categories = await Category.find().lean();
     return categories;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving categories");
+  }
 };
 
 export const createCategory = async (categoryDetails) => {
@@ -24,7 +30,10 @@ export const createCategory = async (categoryDetails) => {
 
     const newCategory = await Category.create(categoryDetails).lean();
     return newCategory;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error creating category");
+  }
 };
 
 export const updateCategory = async (categoryId, categoryDetails) => {
@@ -37,7 +46,10 @@ export const updateCategory = async (categoryId, categoryDetails) => {
 
     if (!updatedCategory) throw new ApiError(404, "Category not found");
     return updatedCategory;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating categories");
+  }
 };
 
 export const deleteCategory = async (categoryId) => {
@@ -46,5 +58,8 @@ export const deleteCategory = async (categoryId) => {
 
     if (!deletedCategory) throw new ApiError(404, "Category not found");
     return deletedCategory;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error deleting categories");
+  }
 };

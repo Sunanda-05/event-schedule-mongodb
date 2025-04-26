@@ -8,7 +8,6 @@ export const SessionSchema = new mongoose.Schema(
     endTime: { type: Date, required: true },
     description: String,
     location: String, // room name or specific location within event
-    capacity: Number,
     speakers: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -24,8 +23,6 @@ export const SessionSchema = new mongoose.Schema(
         url: String,
       },
     ],
-    attendees: { type: Number, default: 0 }, // Count for quick access
-    avgRating: { type: Number, default: 0 }, // Calculated field
   },
   {
     timestamps: true,

@@ -6,7 +6,10 @@ export const createFeedback = async (feedbackDetails) => {
       .populate("userId", "name email")
       .populate("eventId");
     return newFeedback;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error creating feedback");
+  }
 };
 
 export const getEventFeedback = async (eventId) => {
@@ -19,7 +22,10 @@ export const getEventFeedback = async (eventId) => {
       .populate("eventId");
 
     return feedbacks;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving feedback by event");
+  }
 };
 
 export const getFeedbackByUserId = async (userId) => {
@@ -32,7 +38,10 @@ export const getFeedbackByUserId = async (userId) => {
       .populate("eventId");
 
     return feedbacks;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving feedback by user");
+  }
 };
 
 export const updateFeedback = async (feedbackId, feedbackDetails) => {
@@ -50,5 +59,8 @@ export const updateFeedback = async (feedbackId, feedbackDetails) => {
 
     if (!updatedFeedback) throw new ApiError(404, "RSVP not found");
     return updatedFeedback;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating feedback");
+  }
 };

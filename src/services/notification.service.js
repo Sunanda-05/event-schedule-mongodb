@@ -6,7 +6,10 @@ export const createNotification = async (notificationDetails) => {
       .populate("userId", "name email")
       .populate("entityId");
     return newNotification;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error creating notification");
+  }
 };
 
 export const getUserNotifications = async (userId) => {
@@ -18,5 +21,8 @@ export const getUserNotifications = async (userId) => {
       .populate("entityId");
 
     return notifications;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving notifications");
+  }
 };

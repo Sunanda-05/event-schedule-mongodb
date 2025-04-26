@@ -31,6 +31,14 @@ const getUserById = async (id) => {
   }
 };
 
+const getGlobalUserRole = async (id) => {
+  try {
+    const user = await User.findById(id);
+    return user.globalRole;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving global role");
+  }
+};
 
-// getUser
-export { getUserByEmail, createUser, getUserById };
+export { getUserByEmail, createUser, getUserById, getGlobalUserRole };

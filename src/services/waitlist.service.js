@@ -9,7 +9,10 @@ export const getWaitlistById = async (id) => {
       .populate("userId", "name email")
       .populate("eventId", "title shortDescription");
     return waitlist;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving waitlist by id");
+  }
 };
 
 export const getWaitlistByEvent = async (eventId, status) => {
@@ -19,7 +22,10 @@ export const getWaitlistByEvent = async (eventId, status) => {
       status,
     }).populate("userId", "name email");
     return waitlists;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving waitlist by event");
+  }
 };
 
 export const getWaitlistByUser = async (userId) => {
@@ -28,24 +34,26 @@ export const getWaitlistByUser = async (userId) => {
       userId,
     }).populate("eventId", "title shortDescription");
     return waitlists;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving waitlist by user");
+  }
 };
 
 export const createWaitlist = async (waitlistDetails) => {
   try {
-    // const [event, user] = await Promise.all([
-    //   await Event.findById(waitlistDetails.eventId),
-    //   await User.findById(waitlistDetails.userId),
-    // ]);
-
-    // if (!event) throw new ApiError(404, "Event not found");
-    // if (!user) throw new ApiError(404, "User not found");
-
-    const newWaitlist = await Waitlist.create(waitlistDetails)
+    const newWaitlist = await Waitlist.create({
+      ...waitlistDetails,
+      position: await Waitlist.countDocuments(waitlistDetails.eventId),
+    })
       .populate("userId", "name email")
       .populate("eventId", "title shortDescription");
+
     return newWaitlist;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error creating waitlist");
+  }
 };
 
 export const updateWaitlist = async (waitlistId, waitlistDetails) => {
@@ -60,7 +68,10 @@ export const updateWaitlist = async (waitlistId, waitlistDetails) => {
 
     if (!updatedWaitlist) throw new ApiError(404, "Waitlist not found");
     return updatedWaitlist;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating waitlist");
+  }
 };
 
 export const deleteWaitlist = async (waitlistId) => {
@@ -71,5 +82,8 @@ export const deleteWaitlist = async (waitlistId) => {
 
     if (!deletedWaitlist) throw new ApiError(404, "Waitlist not found");
     return deletedWaitlist;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error deleting waitlist");
+  }
 };

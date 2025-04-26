@@ -6,7 +6,10 @@ export const createEventRole = async (eventRoleDetails) => {
       .populate("userId", "name email")
       .populate("eventId");
     return newEventRole;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error creating eventrole");
+  }
 };
 
 export const getRolesByEvent = async (eventId) => {
@@ -19,7 +22,10 @@ export const getRolesByEvent = async (eventId) => {
       .populate("userId", "name email");
 
     return roles;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving eventrole by eventid");
+  }
 };
 
 export const getRolesByUser = async (userId) => {
@@ -31,7 +37,10 @@ export const getRolesByUser = async (userId) => {
       .populate("entityId");
 
     return roles;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving eventrole by user");
+  }
 };
 
 export const deleteEventRole = async (eventRoleId) => {
@@ -42,5 +51,8 @@ export const deleteEventRole = async (eventRoleId) => {
 
     if (!deletedRole) throw new ApiError(404, "Event Role not found");
     return deletedRole;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error deleting eventrole");
+  }
 };

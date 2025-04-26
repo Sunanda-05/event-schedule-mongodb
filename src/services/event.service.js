@@ -14,7 +14,10 @@ export const getEventById = async (id) => {
     const lastVersion = event.versionHistory?.at(-1);
     event.latestUpdatedBy = lastVersion?.updatedBy || null;
     return event;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving event");
+  }
 };
 
 export const getAllEvents = async ({
@@ -51,7 +54,10 @@ export const getAllEvents = async ({
       pageSize: events.length,
       events,
     };
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving events");
+  }
 };
 
 export const updateEvent = async (eventId, eventDetails) => {
@@ -66,7 +72,10 @@ export const updateEvent = async (eventId, eventDetails) => {
 
     if (!updatedEvent) throw new ApiError(404, "Event not found");
     return updatedEvent;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error updating events");
+  }
 };
 
 export const deleteEvent = async (eventId) => {
@@ -77,7 +86,10 @@ export const deleteEvent = async (eventId) => {
 
     if (!deletedEvent) throw new ApiError(404, "Event not found");
     return deletedEvent;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error deleting events");
+  }
 };
 
 export const getUpcomingEvents = async (userId) => {
@@ -101,7 +113,10 @@ export const getUpcomingEvents = async (userId) => {
     });
 
     return events;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error getting upcoming events");
+  }
 };
 
 export const getEventsByCategory = async (catId) => {
@@ -122,7 +137,10 @@ export const getEventsByCategory = async (catId) => {
     });
 
     return events;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving events by category");
+  }
 };
 
 export const getNearbyEvents = async (coords, radiusInKm = 10) => {
@@ -153,7 +171,10 @@ export const getNearbyEvents = async (coords, radiusInKm = 10) => {
     });
 
     return events;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving nearby events");
+  }
 };
 
 export const getPublishedEvents = async () => {
@@ -174,7 +195,10 @@ export const getPublishedEvents = async () => {
     });
 
     return events;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving published events");
+  }
 };
 
 export const getVersionHistory = async (eventId) => {
@@ -187,5 +211,8 @@ export const getVersionHistory = async (eventId) => {
     if (!event) throw new Error("Event not found");
 
     return event.versionHistory || [];
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error retrieving version history");
+  }
 };

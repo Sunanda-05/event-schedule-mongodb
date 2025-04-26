@@ -95,7 +95,7 @@ EventSchema.virtual("durationHours").get(function () {
     : "0.00";
 });
 
-EventSchema.statics.updateAvgRating = async (eventId) => {
+EventSchema.statics.updateAvgRating = async function (eventId) {
   const Feedback = mongoose.model("Feedback");
   const result = await Feedback.aggregate([
     {
@@ -115,16 +115,30 @@ EventSchema.statics.updateAvgRating = async (eventId) => {
   await this.findByIdAndUpdate(eventId, { avgRating: avgRating.toFixed(1) });
 };
 
-EventSchema.statics.updateAttendees = async (eventId) => {
+EventSchema.statics.updateAttendees = async function (eventId) {
   const RSVP = mongoose.model("RSVP");
   const count = await RSVP.countDocuments({
     eventId,
-    status: "confirmed",
+    status: "attending",
   });
 
   await this.findByIdAndUpdate(eventId, {
     attendees: count,
   });
+};
+
+EventSchema.statics.getAttendees = async function (eventId) {
+  return this.findById(eventId).select("attendees");
+};
+
+EventSchema.statics.getCapacity = async function (eventId) {
+  return this.findById(eventId).select("capacity");
+};
+
+EventSchema.statics.getAvailableSpots = async function (eventId) {
+  const event = this.findById(eventId);
+  const availableSpots = event.capacity - event.attendees;
+  return availableSpots;
 };
 
 EventSchema.set("toJSON", { virtuals: true });
