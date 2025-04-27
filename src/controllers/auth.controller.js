@@ -102,11 +102,11 @@ export const logoutUser = async (request, response) => {
 
 export const registerUser = async (request, response) => {
   try {
-    const { email, password, name } = request.body;
-    if (!email || !password) {
+    const { email, password, name, preferences, location } = request.body;
+    if (!email || !password || !location) {
       return response
         .status(400)
-        .json({ error: "Email & Password are required." });
+        .json({ error: "Email, Password & location are required." });
     }
 
     const userExists = await getUserByEmail(email);
@@ -117,7 +117,13 @@ export const registerUser = async (request, response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userData = { email, password: hashedPassword, name };
+    const userData = {
+      email,
+      password: hashedPassword,
+      name,
+      preferences,
+      location,
+    };
     const user = await createUser(userData);
 
     response.status(201).json(user);

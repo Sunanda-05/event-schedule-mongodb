@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import auditLoggerPlugin from "../utils/AuditLoggerPlugin";
+import auditLoggerPlugin from "../utils/AuditLoggerPlugin.js";
 
 const WaitlistSchema = new mongoose.Schema(
   {

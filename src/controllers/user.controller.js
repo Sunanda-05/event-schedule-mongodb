@@ -1,4 +1,6 @@
 import { getUserById } from "../services/user.service.js";
+import * as EventRoleServices from "../services/eventRole.service.js";
+import * as RSVPServices from "../services/rsvp.service.js";
 
 export const getUserProfile = async (req, res, next) => {
   try {
@@ -12,4 +14,25 @@ export const getUserProfile = async (req, res, next) => {
   }
 };
 
-export default getUserProfile;
+export const getRolesByUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const roles = await EventRoleServices.getRolesByUser(userId);
+    res.status(200).json(roles);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getRSVPByUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    if (!userId) throw new ApiError(400, "UserId ");
+
+    const rsvps = await RSVPServices.getRSVPByUser(userId);
+    res.status(200).json(rsvps);
+  } catch (error) {
+    next(error);
+  }
+};

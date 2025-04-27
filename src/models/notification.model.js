@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import auditLoggerPlugin from "../utils/AuditLoggerPlugin";
+import auditLoggerPlugin from "../utils/AuditLoggerPlugin.js";
 
 const NotificationSchema = new mongoose.Schema(
   {

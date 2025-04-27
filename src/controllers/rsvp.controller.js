@@ -1,5 +1,5 @@
 import * as RSVPServices from "../services/rsvp.service.js";
-import ApiError from "../utils/ApiError";
+import ApiError from "../utils/ApiError.js";
 
 export const getRSVPByUserEvent = async (req, res, next) => {
   try {
@@ -11,19 +11,6 @@ export const getRSVPByUserEvent = async (req, res, next) => {
 
     const rsvp = await RSVPServices.getRSVPByUserEvent(userId, eventId);
     res.status(200).json(rsvp);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getRSVPByUser = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-
-    if (!userId) throw new ApiError(400, "UserId ");
-
-    const rsvps = await RSVPServices.getRSVPByUser(userId);
-    res.status(200).json(rsvps);
   } catch (error) {
     next(error);
   }
@@ -66,7 +53,7 @@ export const createRSVP = async (req, res, next) => {
 export const updateCheckInTime = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const rsvpId = req.params.eventId;
+    const rsvpId = req.params.rsvpId;
 
     if (!rsvpId || !userId || !req.body.checkInTime)
       throw new ApiError(400, "RSVPId and UserId and status needed");

@@ -13,6 +13,8 @@ const getUserByEmail = async (email) => {
 const createUser = async (userData) => {
   try {
     const user = await User.create(userData);
+    // const user = new User(userData);
+    // await user.save();
     const { password, ...safeUser } = user.toObject(); // or .lean()
     return safeUser;
   } catch (error) {

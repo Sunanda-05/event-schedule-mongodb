@@ -58,10 +58,10 @@ export const getUpcomingEvents = async (req, res, next) => {
 
 export const getEventsByCategory = async (req, res, next) => {
   try {
-    const catId = req.params.categoryId;
-    if (!catId) throw new ApiError(400, "Category ID is required");
+    const categoryId = req.params.categoryId;
+    if (!categoryId) throw new ApiError(400, "Category ID is required");
 
-    const events = await EventServices.getEventsByCategory(catId);
+    const events = await EventServices.getEventsByCategory(categoryId);
     res.status(200).json(events);
   } catch (error) {
     next(error);

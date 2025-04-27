@@ -1,5 +1,5 @@
 import * as WaitlistServices from "../services/waitlist.service.js";
-import ApiError from "../utils/ApiError";
+import ApiError from "../utils/ApiError.js";
 
 export const getWaitlistByUserEvent = async (req, res, next) => {
   try {

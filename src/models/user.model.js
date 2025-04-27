@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import auditLoggerPlugin from "../utils/AuditLoggerPlugin";
+import auditLoggerPlugin from "../utils/AuditLoggerPlugin.js";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -18,9 +18,15 @@ const UserSchema = new mongoose.Schema(
     },
     globalRole: { type: String, enum: ["admin", "user"], default: "user" },
     location: {
-      //geojson type
-      type: { type: String, default: "Point" },
-      coordinates: [Number], // [longitude, latitude]
+      type: { 
+        type: String, 
+        default: "Point", 
+        enum: ["Point"] 
+      },
+      coordinates: {
+        type: [Number], //[longitude, latitude]
+        required: true, // Ensure coordinates are provided
+      },
     },
     preferences: {
       notificationSettings: Object,

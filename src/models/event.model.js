@@ -10,7 +10,7 @@
 
 import mongoose from "mongoose";
 import { SessionSchema } from "./session.model.js";
-import auditLoggerPlugin from "../utils/AuditLoggerPlugin";
+import auditLoggerPlugin from "../utils/AuditLoggerPlugin.js";
 
 const EventSchema = new mongoose.Schema(
   {

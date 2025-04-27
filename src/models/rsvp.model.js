@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Event from "./event.model.js";
-import auditLoggerPlugin from "../utils/AuditLoggerPlugin";
+import auditLoggerPlugin from "../utils/AuditLoggerPlugin.js";
 
 const RSVPSchema = new mongoose.Schema(
   {
