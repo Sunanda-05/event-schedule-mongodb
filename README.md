@@ -4,9 +4,9 @@
 
 A modern backend system for organizing, managing, and attending events. It handles authentication, role-based access, session scheduling, RSVP/waitlist handling, feedback, notifications, and logging — all while leveraging MongoDB's document strengths like subdocuments, virtuals, TTL indexes, and compound indexes.
 
-## 🚀 Key Features
+## Key Features
 
-### 🔐 Authentication & Security
+### Authentication & Security
 
 | Feature             | Implementation                                    |
 | ------------------- | ------------------------------------------------- |
@@ -16,7 +16,7 @@ A modern backend system for organizing, managing, and attending events. It handl
 | Password Hashing    | bcryptjs inside Mongoose pre-hooks                |
 | Security Middleware | Helmet, Rate-limiting, CORS                       |
 
-### 👥 User & Role Management
+### User & Role Management
 
 - Register/Login with JWT-based sessions
 - Roles like admin, organizer, attendee stored in Role model
@@ -24,39 +24,39 @@ A modern backend system for organizing, managing, and attending events. It handl
 - Admin-only routes for managing users
 - Soft delete supported
 
-### 📅 Event & Session Management
+### Event & Session Management
 
 - Events created by users (with createdBy ref)
 - Each event has embedded sessions with title, speaker, timing, etc.
 - Subdocuments used for sessions (inside Event model)
 - Virtuals like totalDuration and numberOfSessions for analytics
 
-### 📨 RSVP & Waitlist
+### RSVP & Waitlist
 
 - RSVP statuses: Going, Interested, Not Going
 - One RSVP per user per event (compound index)
 - Waitlist kicks in when event is full
 - Prevents duplicate waitlist entries using (user, event) index
 
-### 💬 Feedback System
+### Feedback System
 
 - Users leave rating (1–5 stars) + comments on events
 - Ratings validated inside schema
 - Aggregation pipeline can be used for computing average rating per event
 
-### 🔔 Notification System
+### Notification System
 
 - Notify users about RSVP confirmations, event changes, or waitlist moves
 - `status` unread/read for UI display
 - TTL index optional for old auto-deletion
 
-### 📝 Audit Logging
+### Audit Logging
 
 - Each major action (event update, RSVP, etc.) is logged
 - Manual logging using a reusable plugin (req.user passed)
 - Fields logged: user, action, target model, timestamp
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 | Category    | Technologies             |
 | ----------- | ------------------------ |
@@ -111,7 +111,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | DELETE | /events/:id                  | Delete event (organizer only)         | ✅ (organizer) |
 | GET    | /events/:id/history          | Get version history of the event      | ✅ (organizer) |
 
-### 🎭 Event Role Routes
+### Event Role Routes
 
 | Method | Endpoint                   | Description                    | Auth Required  |
 | ------ | -------------------------- | ------------------------------ | -------------- |
@@ -119,7 +119,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | GET    | /events/:eventId/roles     | Get roles assigned to an event | ✅             |
 | DELETE | /events/:eventId/roles/:id | Remove a role from an event    | ✅             |
 
-### 🧾 Session Routes
+### Session Routes
 
 | Method | Endpoint                            | Description               | Auth Required  |
 | ------ | ----------------------------------- | ------------------------- | -------------- |
@@ -127,7 +127,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | PUT    | /events/:eventId/session/:sessionId | Update a session          | ✅ (organizer) |
 | DELETE | /events/:eventId/session/:sessionId | Delete a session          | ✅ (organizer) |
 
-### 📝 RSVP Routes
+### RSVP Routes
 
 | Method | Endpoint                               | Description                          | Auth Required |
 | ------ | -------------------------------------- | ------------------------------------ | ------------- |
@@ -137,7 +137,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | PATCH  | /events/:eventId/rsvp/:rsvpId/check-in | Mark user as checked in              | ✅            |
 | PUT    | /events/:eventId/rsvp/:rsvpId/status   | Update RSVP status                   | ✅            |
 
-### ⏳ Waitlist Routes
+### Waitlist Routes
 
 | Method | Endpoint                      | Description                            | Auth Required |
 | ------ | ----------------------------- | -------------------------------------- | ------------- |
@@ -145,14 +145,14 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | GET    | /waitlist/event/:eventId      | Get waitlist for a specific event      | ✅            |
 | GET    | /waitlist/event/:eventId/user | Check if user is on waitlist for event | ✅            |
 
-### 📣 Notification Routes
+### Notification Routes
 
 | Method | Endpoint            | Description              | Auth Required |
 | ------ | ------------------- | ------------------------ | ------------- |
 | POST   | /notifications      | Create a notification    | ✅            |
 | GET    | /notifications/user | Get user's notifications | ✅            |
 
-### 🌟 Feedback Routes
+### Feedback Routes
 
 | Method | Endpoint                 | Description                        | Auth Required |
 | ------ | ------------------------ | ---------------------------------- | ------------- |
@@ -162,7 +162,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | PUT    | /feedback/:id            | Update feedback                    | ✅            |
 | POST   | /feedback/:id/helpful    | Mark feedback as helpful           | ✅            |
 
-### 🏷️ Category Routes
+### Category Routes
 
 | Method | Endpoint        | Description           | Auth Required |
 | ------ | --------------- | --------------------- | ------------- |
@@ -171,7 +171,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | PATCH  | /categories/:id | Update a category     | ✅            |
 | DELETE | /categories/:id | Delete a category     | ✅            |
 
-## 🧠 MongoDB Design Highlights
+## MongoDB Design Highlights
 
 | MongoDB Feature  | Used In                          |
 | ---------------- | -------------------------------- |
@@ -185,7 +185,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | Plugins          | Audit logging                    |
 | Aggregation      | Event average ratings (optional) |
 
-## 🧾 Core Models Overview
+## Core Models Overview
 
 | Model         | Description                                |
 | ------------- | ------------------------------------------ |
@@ -201,7 +201,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | AuditLog      | Logs of user/admin actions                 |
 | Category      | Event categories with unique name          |
 
-## 🧼 Security Enhancements
+## Security Enhancements
 
 - helmet to set HTTP headers securely
 - express-rate-limit to prevent brute-force attacks
@@ -229,11 +229,11 @@ npm run dev
 
 ## 📌 Future Enhancements
 
-- 🧪 Add input validation with zod or joi
-- 📈 Admin dashboard for analytics (event popularity, feedback stats)
-- 📬 Email notifications (RSVP confirmations)
-- 📱 Frontend integration (React / Next.js)
-- 🔐 OAuth login (Google, GitHub)
+- Add input validation with zod or joi
+- Admin dashboard for analytics (event popularity, feedback stats)
+- Email notifications (RSVP confirmations)
+- Frontend integration (React / Next.js)
+- OAuth login (Google, GitHub)
 
 ## License
 
