@@ -16,6 +16,7 @@ import eventRoutes from "./routes/event.routes.js";
 import feedbackRoutes from "./routes/feedback.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import waitlistRoutes from "./routes/waitlist.routes.js";
+import { setupSwagger } from "./swagger/swagger.js";
 
 const app = express();
 app.use(express.json());
@@ -35,6 +36,7 @@ app.use("/api/event", eventRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/waitlist", waitlistRoutes);
+setupSwagger(app);
 
 app.use(errorHandler);
 

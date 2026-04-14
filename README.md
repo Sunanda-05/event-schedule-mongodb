@@ -11,29 +11,28 @@ A modern backend system for organizing, managing, and attending events. It handl
 | Feature             | Implementation                                    |
 | ------------------- | ------------------------------------------------- |
 | JWT Auth            | Access + Refresh Tokens (securely stored/rotated) |
-| Role-Based Access   | RBAC via middleware (requireRole)                 |
+| Role-Based Access   | RBAC via auth + authorizeRole middleware           |
 | Token Storage       | Refresh tokens stored in a separate collection    |
-| Password Hashing    | bcryptjs inside Mongoose pre-hooks                |
+| Password Hashing    | bcryptjs during auth/register flow                |
 | Security Middleware | Helmet, Rate-limiting, CORS                       |
 
 ### User & Role Management
 
 - Register/Login with JWT-based sessions
-- Roles like admin, organizer, attendee stored in Role model
+- Global user role plus per-event roles via EventRole model
 - Profile update with role population
-- Admin-only routes for managing users
-- Soft delete supported
+- Admin-only checks on protected category management flows
 
 ### Event & Session Management
 
 - Events created by users (with createdBy ref)
 - Each event has embedded sessions with title, speaker, timing, etc.
 - Subdocuments used for sessions (inside Event model)
-- Virtuals like totalDuration and numberOfSessions for analytics
+- Virtuals like durationMinutes and durationHours for analytics
 
 ### RSVP & Waitlist
 
-- RSVP statuses: Going, Interested, Not Going
+- RSVP statuses: attending, maybe, not attending
 - One RSVP per user per event (compound index)
 - Waitlist kicks in when event is full
 - Prevents duplicate waitlist entries using (user, event) index
@@ -67,7 +66,7 @@ A modern backend system for organizing, managing, and attending events. It handl
 | Security    | Helmet, CORS, RateLimit  |
 | Module Type | ECMAScript Modules (ESM) |
 
-## 📡 API Authentication
+## API Authentication
 
 All protected endpoints require a valid access token in the Authorization header:
 
@@ -77,99 +76,112 @@ Authorization: Bearer <accessToken>
 
 Refresh tokens are stored securely and rotated for extended sessions.
 
-## 🔧 API Routes
+## Swagger Documentation
 
-### 🛂 Auth Routes
+- Swagger UI: http://localhost:5001/api-docs
+- OpenAPI JSON: http://localhost:5001/api-docs.json
+
+### Swagger Image Placeholders
+
+| Image 1 | Image 2 |
+| --- | --- |
+| [![Swagger Image 1](/images/image0.png)](/images/image0.png) | [![Swagger Image 2](/images/image1.png)](/images/image1.png) |
+| [![Swagger Image 3](/images/image2.png)](/images/image2.png) | [![Swagger Image 4](/images/image3.png)](/images/image3.png) |
+| [![Swagger Image 5](/images/image4.png)](/images/image4.png) | [![Swagger Image 6](/images/image5.png)](/images/image5.png) |
+
+## API Routes
+
+### Auth Routes
 
 | Method | Endpoint       | Description          | Auth Required |
 | ------ | -------------- | -------------------- | ------------- |
-| POST   | /auth/register | Register new user    | ❌            |
-| POST   | /auth/login    | Login & issue tokens | ❌            |
-| POST   | /auth/refresh  | Rotate access token  | ✅ (cookie)   |
-| POST   | /auth/logout   | Revoke session       | ✅            |
+| POST   | /api/auth/register | Register new user    | No            |
+| POST   | /api/auth/login    | Login and issue tokens | No          |
+| POST   | /api/auth/refresh-token  | Rotate access token  | Refresh cookie |
+| POST   | /api/auth/logout   | Revoke session       | Refresh cookie |
 
-### 👤 User Routes
+### User Routes
 
 | Method | Endpoint    | Description                    | Auth Required |
 | ------ | ----------- | ------------------------------ | ------------- |
-| GET    | /user       | Get current user profile       | ✅            |
-| GET    | /user/roles | Get roles associated with user | ✅            |
-| GET    | /user/rsvp  | Get RSVP history for the user  | ✅            |
+| GET    | /api/user       | Get current user profile       | Yes          |
+| GET    | /api/user/roles | Get roles associated with user | Yes          |
+| GET    | /api/user/rsvp  | Get RSVP history for the user  | Yes          |
 
-### 📅 Event Routes
+### Event Routes
 
 | Method | Endpoint                     | Description                           | Auth Required  |
 | ------ | ---------------------------- | ------------------------------------- | -------------- |
-| GET    | /events                      | Get all events                        | ✅             |
-| POST   | /events                      | Create a new event                    | ✅             |
-| GET    | /events/published            | Get published events                  | ✅             |
-| GET    | /events/upcoming             | Get upcoming events                   | ✅             |
-| GET    | /events/nearby               | Get nearby events (based on location) | ✅             |
-| GET    | /events/category/:categoryId | Get events by category ID             | ✅             |
-| GET    | /events/:id                  | Get event by ID                       | ✅             |
-| PATCH  | /events/:id                  | Update event (organizer only)         | ✅ (organizer) |
-| DELETE | /events/:id                  | Delete event (organizer only)         | ✅ (organizer) |
-| GET    | /events/:id/history          | Get version history of the event      | ✅ (organizer) |
+| GET    | /api/event                      | Get all events                        | Yes            |
+| POST   | /api/event                      | Create a new event                    | Yes            |
+| GET    | /api/event/published            | Get published events                  | Yes            |
+| GET    | /api/event/upcoming             | Get upcoming events                   | Yes            |
+| GET    | /api/event/nearby               | Get nearby events (based on location) | Yes            |
+| GET    | /api/event/category/:categoryId | Get events by category ID             | Yes            |
+| GET    | /api/event/:id                  | Get event by ID                       | Yes            |
+| PATCH  | /api/event/:id                  | Update event (organizer only)         | Yes (organizer) |
+| DELETE | /api/event/:id                  | Delete event (organizer only)         | Yes (organizer) |
+| GET    | /api/event/:id/history          | Get version history of the event      | Yes (organizer) |
 
 ### Event Role Routes
 
 | Method | Endpoint                   | Description                    | Auth Required  |
 | ------ | -------------------------- | ------------------------------ | -------------- |
-| POST   | /events/:eventId/roles     | Assign a role for an event     | ✅ (organizer) |
-| GET    | /events/:eventId/roles     | Get roles assigned to an event | ✅             |
-| DELETE | /events/:eventId/roles/:id | Remove a role from an event    | ✅             |
+| POST   | /api/event/:eventId/roles     | Assign a role for an event     | Yes (organizer) |
+| GET    | /api/event/:eventId/roles     | Get roles assigned to an event | Yes            |
+| DELETE | /api/event/:eventId/roles/:id | Remove a role from an event    | Yes            |
 
 ### Session Routes
 
 | Method | Endpoint                            | Description               | Auth Required  |
 | ------ | ----------------------------------- | ------------------------- | -------------- |
-| POST   | /events/:eventId/session            | Add a session to an event | ✅ (organizer) |
-| PUT    | /events/:eventId/session/:sessionId | Update a session          | ✅ (organizer) |
-| DELETE | /events/:eventId/session/:sessionId | Delete a session          | ✅ (organizer) |
+| POST   | /api/event/:eventId/session            | Add a session to an event | Yes (organizer) |
+| PUT    | /api/event/:eventId/session/:sessionId | Update a session          | Yes (organizer) |
+| DELETE | /api/event/:eventId/session/:sessionId | Delete a session          | Yes (organizer) |
 
 ### RSVP Routes
 
 | Method | Endpoint                               | Description                          | Auth Required |
 | ------ | -------------------------------------- | ------------------------------------ | ------------- |
-| GET    | /events/:eventId/rsvp                  | Get all RSVPs for an event           | ✅            |
-| GET    | /events/:eventId/rsvp/user             | Get current user's RSVP for an event | ✅            |
-| POST   | /events/:eventId/rsvp                  | Submit RSVP for an event             | ✅            |
-| PATCH  | /events/:eventId/rsvp/:rsvpId/check-in | Mark user as checked in              | ✅            |
-| PUT    | /events/:eventId/rsvp/:rsvpId/status   | Update RSVP status                   | ✅            |
+| GET    | /api/event/:eventId/rsvp                  | Get all RSVPs for an event           | Yes           |
+| GET    | /api/event/:eventId/rsvp/user             | Get current user's RSVP for an event | Yes           |
+| POST   | /api/event/:eventId/rsvp                  | Submit RSVP for an event             | Yes           |
+| PATCH  | /api/event/:eventId/rsvp/:rsvpId/check-in | Mark user as checked in              | Yes           |
+| PUT    | /api/event/:eventId/rsvp/:rsvpId/status   | Update RSVP status                   | Yes           |
 
 ### Waitlist Routes
 
 | Method | Endpoint                      | Description                            | Auth Required |
 | ------ | ----------------------------- | -------------------------------------- | ------------- |
-| GET    | /waitlist/user                | Get waitlist entries by current user   | ✅            |
-| GET    | /waitlist/event/:eventId      | Get waitlist for a specific event      | ✅            |
-| GET    | /waitlist/event/:eventId/user | Check if user is on waitlist for event | ✅            |
+| GET    | /api/waitlist/user                | Get waitlist entries by current user   | Yes           |
+| GET    | /api/waitlist/event/:eventId      | Get waitlist for a specific event      | Yes           |
+| GET    | /api/waitlist/event/:eventId/user | Check if user is on waitlist for event | Yes           |
 
 ### Notification Routes
 
 | Method | Endpoint            | Description              | Auth Required |
 | ------ | ------------------- | ------------------------ | ------------- |
-| POST   | /notifications      | Create a notification    | ✅            |
-| GET    | /notifications/user | Get user's notifications | ✅            |
+| POST   | /api/notification      | Create a notification    | Yes           |
+| GET    | /api/notification/user | Get user's notifications | Yes           |
 
 ### Feedback Routes
 
 | Method | Endpoint                 | Description                        | Auth Required |
 | ------ | ------------------------ | ---------------------------------- | ------------- |
-| POST   | /feedback                | Submit feedback                    | ✅            |
-| GET    | /feedback/event/:eventId | Get feedback for a specific event  | ✅            |
-| GET    | /feedback/user           | Get feedback submitted by the user | ✅            |
-| PUT    | /feedback/:id            | Update feedback                    | ✅            |
-| POST   | /feedback/:id/helpful    | Mark feedback as helpful           | ✅            |
+| POST   | /api/feedback                | Submit feedback                    | Yes           |
+| GET    | /api/feedback/event/:eventId | Get feedback for a specific event  | Yes           |
+| GET    | /api/feedback/user           | Get feedback submitted by the user | Yes           |
+| PUT    | /api/feedback/:id            | Update feedback                    | Yes           |
+| POST   | /api/feedback/:id/helpful    | Mark feedback as helpful           | Yes           |
 
 ### Category Routes
 
 | Method | Endpoint        | Description           | Auth Required |
 | ------ | --------------- | --------------------- | ------------- |
-| GET    | /categories     | Get all categories    | ✅            |
-| POST   | /categories     | Create a new category | ✅            |
-| PATCH  | /categories/:id | Update a category     | ✅            |
-| DELETE | /categories/:id | Delete a category     | ✅            |
+| GET    | /api/category     | Get all categories    | Yes           |
+| POST   | /api/category     | Create a new category | Yes           |
+| PATCH  | /api/category/:id | Update a category     | Yes           |
+| DELETE | /api/category/:id | Delete a category     | Yes           |
 
 ## MongoDB Design Highlights
 
@@ -190,7 +202,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 | Model         | Description                                |
 | ------------- | ------------------------------------------ |
 | User          | User info + role ref                       |
-| Role          | Role names for RBAC                        |
+| EventRole     | Role assignments by user and event         |
 | Event         | Event info, creator ref, embedded sessions |
 | SessionSchema | Subdocument inside Event.sessions[]        |
 | RSVP          | RSVP by user for event                     |
@@ -208,7 +220,7 @@ Refresh tokens are stored securely and rotated for extended sessions.
 - CORS policy with whitelist
 - Optional: express-mongo-sanitize to prevent NoSQL injection
 
-## 🛠 Getting Started
+## Getting Started
 
 ```bash
 # Clone the repository
@@ -227,7 +239,7 @@ cp .env.example .env
 npm run dev
 ```
 
-## 📌 Future Enhancements
+## Future Enhancements
 
 - Add input validation with zod or joi
 - Admin dashboard for analytics (event popularity, feedback stats)
